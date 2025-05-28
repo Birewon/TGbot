@@ -79,7 +79,7 @@ def answer_vegetables(message):
             response = 'Помидоры содержат ликопин! 🔴'
         case '🍎 К фруктам':
             bot.send_message(message.chat.id, 'Вернемся к фруктам!')
-            time.sleep(2)
+            time.sleep(1)
             bot.delete_message(message.chat.id, message.message_id)
             start_1(message)
         case '❌ Скрыть':
