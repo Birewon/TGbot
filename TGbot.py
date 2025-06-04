@@ -56,6 +56,7 @@ def start(message):
 
 
 
+
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     if call.data == 'general_button':
@@ -82,6 +83,6 @@ def callback(call):
 
 
 
-
-
 bot.infinity_polling()
+
+
