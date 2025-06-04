@@ -65,6 +65,11 @@ def callback(call):
                 con = sqlite3.connect("database.db", check_same_thread=False)
                 cur = con.cursor()
                 cur.execute("UPDATE press SET id = id + 1")
+
+                cur.execute("SELECT MAX(id) FROM press")
+                res = cur.fetchone()
+
+                bot.edit_message_text(f'Количество нажатий: {str(res)[1:-2]}', call.message.chat.id, message_data_id, reply_markup=call.message.reply_markup)
                 con.commit()
             finally:
                 con.close()
