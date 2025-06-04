@@ -44,21 +44,25 @@ init_db()
 load_dotenv(r'secrets\.env')
 bot = telebot.TeleBot(os.getenv('BOT_TOKEN'))  #Токен бота
 
+message_data_id = 0
+
 # Запуск бота
 @bot.message_handler(commands=['start'])
 def start(message):
+    global message_data_id
     markup = types.InlineKeyboardMarkup(row_width=1)
     btn1 = types.InlineKeyboardButton('Жми!', callback_data='general_button')
-    btn2 = types.InlineKeyboardButton('Количество нажатий', callback_data='data_button')
-    markup.add(btn1, btn2)
+    markup.add(btn1)
 
-    bot.send_message(message.chat.id, 'Жми! Жми! Жми!', reply_markup=markup)
+    message_1 = bot.send_message(message.chat.id, 'Жми! Жми! Жми!', reply_markup=markup)
+    message_data_id = message_1.message_id
 
 
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
+    global message_data_id
     if call.data == 'general_button':
         with db_lock:
             try:
@@ -74,16 +78,6 @@ def callback(call):
             finally:
                 con.close()
 
-    elif call.data == 'data_button':
-        with db_lock:
-            try:
-                con = sqlite3.connect("database.db", check_same_thread=False)
-                cur = con.cursor()
-                cur.execute("SELECT MAX(id) FROM press")
-                res = cur.fetchone()
-                bot.send_message(call.message.chat.id, f'Количество нажатий: {str(res)[1:-2]}')
-            finally:
-                con.close()
 
 
 
